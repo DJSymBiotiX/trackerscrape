@@ -1,0 +1,18 @@
+# compiled python files
+*.pyc
+
+# Test coverage files
+.coverage
+cover/
+
+# Setuptools
+packagetracker.egg-info/
+build/
+dist/
+
+# Virtualenv
+env/
+
+# testfiles
+test.py
+config.cfg
