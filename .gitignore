@@ -6,7 +6,7 @@
 cover/
 
 # Setuptools
-packagetracker.egg-info/
+trackerscrape.egg-info/
 build/
 dist/
 
@@ -15,4 +15,3 @@ env/
 
 # testfiles
 test.py
-config.cfg
