@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+import lxml.html
 
 
 class UPSInterface(object):
@@ -10,8 +10,30 @@ class UPSInterface(object):
     def track(self):
         url = self.url()
         result = requests.get(url)
-        soup = BeautifulSoup(result.content, 'html5lib')
-        return soup.find(id='tt_spStatus').text.strip()
+        doc = lxml.html.fromstring(result.text)
+
+        status = doc.get_element_by_id('tt_spStatus').text_content().strip()
+
+        texts = {}
+        # Compile all the text from every <dl> with a single <dt> and <dd> into
+        # a dict
+        for dl in doc.findall('.//dl'):
+            dts = dl.findall('./dt')
+            dds = dl.findall('./dd')
+
+            if len(dts) == 1 and len (dds) == 1:
+                dt = dts[0].text_content().strip()
+                dd = dds[0].text_content().strip()
+                texts[dt] = ' '.join(dd.split())
+
+        scheduled_delivery = texts['Scheduled Delivery:']
+        last_location = texts['Last Location:']
+
+        return {
+            'status': status,
+            'scheduled_delivery': scheduled_delivery,
+            'last_location': last_location
+        }
 
     def url(self):
         base = (
