@@ -1,6 +1,8 @@
 import requests
 import lxml.html
 
+from .useragent import get_random_useragent
+
 
 class UPSInterface(object):
 
@@ -9,7 +11,10 @@ class UPSInterface(object):
 
     def track(self):
         url = self.url()
-        result = requests.get(url)
+        headers = {
+            'User-Agent': get_random_useragent()
+        }
+        result = requests.get(url, headers=headers)
         doc = lxml.html.fromstring(result.text)
 
         status = doc.get_element_by_id('tt_spStatus').text_content().strip()
